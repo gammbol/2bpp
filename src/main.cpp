@@ -1,6 +1,6 @@
 #include <main.hpp>
 
-int main() {
+int main(int argc, char *argv[]) {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -19,16 +19,22 @@ int main() {
     return -1;
   }
 
+  // shaders
+  shaders shd("shaders/vertex.vs", "shaders/fragment.fs");
+
   glfwSetFramebufferSizeCallback(window, frambuffer_size_callback);
 
   while (!glfwWindowShouldClose(window)) {
+    process_input(window);
+
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
     glfwSwapBuffers(window);
     glfwPollEvents();
-
-    process_input(window);
   }
 
-
+  glfwTerminate();
   return 0;
 }
 

@@ -3,9 +3,12 @@ project(2bpp)
 
 add_subdirectory(deps/glfw)
 
+file(COPY shaders DESTINATION .)
+
 add_executable(2bpp 
   src/main.cpp
   src/glad.c
+  src/shaders.cpp
 )
 
 target_include_directories(2bpp PRIVATE
