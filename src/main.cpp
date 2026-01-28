@@ -19,9 +19,35 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
+  // vertices
+  float vertices[] = {
+    -.5f, -.5f, .0f,    // left bottom
+    .5f, -.5f, .0f,     // right bottom
+    .0f, 0.5f, .0f      // center top
+  };
+
+  // vao
+  unsigned int VAO;
+  glGenVertexArrays(1, &VAO);
+
+  glBindVertexArray(VAO);
+
+  // vbo
+  unsigned int VBO;
+  glGenBuffers(1, &VBO);
+
+  // GL_ARRAY_BUFFER - vertex buffer object type
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+
   // shaders
   shaders shd("shaders/vertex.vs", "shaders/fragment.fs");
+  shd.compile_shaders();
+  shd.link_program();
 
+  // setting resize callback
   glfwSetFramebufferSizeCallback(window, frambuffer_size_callback);
 
   while (!glfwWindowShouldClose(window)) {
@@ -29,6 +55,10 @@ int main(int argc, char *argv[]) {
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    shd.use_program();
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
     
     glfwSwapBuffers(window);
     glfwPollEvents();

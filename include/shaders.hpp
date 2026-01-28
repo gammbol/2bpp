@@ -2,9 +2,13 @@
 #define SHADERS_2BPP_H
 
 #include <string>
+#include <cstring>
 #include <iostream>
 #include <sstream>
 #include <fstream>
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 enum SHADERS_STATES {
   NOS,
@@ -14,7 +18,9 @@ enum SHADERS_STATES {
 };
 
 class shaders {
-  std::string vs, fs;
+  std::string vss, fss;
+
+  unsigned int vs, fs, sp;
 
   SHADERS_STATES state;
 
@@ -23,6 +29,7 @@ public:
 
   void compile_shaders();
   void link_program();
+  void use_program();
 };
 
 #endif
