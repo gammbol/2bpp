@@ -30,6 +30,10 @@ public:
   void compile_shaders();
   void link_program();
   void use_program();
+
+  void setBool(const std::string& name, bool value);
+  void setFloat(const std::string& name, float value);
+  void setInt(const std::string& name, int value);
 };
 
 #endif

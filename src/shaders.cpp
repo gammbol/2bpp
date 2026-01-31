@@ -105,4 +105,18 @@ void shaders::use_program() {
     std::cerr << "Shaders are not linked! Using is not possible!" << std::endl;
     return;
   }
+
+  glUseProgram(sp);
+}
+
+void shaders::setBool(const std::string& name, bool value) {
+  glUniform1i(glGetUniformLocation(sp, name.c_str()), (int)value);
+}
+
+void shaders::setInt(const std::string& name, int value) {
+  glUniform1i(glGetUniformLocation(sp, name.c_str()), value);
+}
+
+void shaders::setFloat(const std::string& name, float value) {
+  glUniform1f(glGetUniformLocation(sp, name.c_str()), value);
 }
