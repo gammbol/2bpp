@@ -8,6 +8,10 @@
 
 #include <shaders.hpp>
 
+// image loading
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 const int SCR_WIDTH = 800;
 const int SCR_HEIGHT = 600;
 

@@ -4,6 +4,7 @@ project(2bpp)
 add_subdirectory(deps/glfw)
 
 file(COPY shaders DESTINATION .)
+file(COPY img DESTINATION .)
 
 add_executable(2bpp 
   src/main.cpp

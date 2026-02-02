@@ -21,9 +21,9 @@ int main(int argc, char *argv[]) {
 
   // vertices
   float vertices[] = {
-    -.5f, -.5f, .0f, .0f, 1.0f, .0f,    // left bottom
-    .5f, -.5f, .0f, 1.0f, .0f, .0f,     // right bottom
-    .0f, 0.5f, .0f, .0f, .0f, 1.0f      // center top
+    -.5f, -.5f, .0f,    .0f, 1.0f, .0f,   .0f, .0f,    // left bottom
+    .5f, -.5f, .0f,     1.0f, .0f, .0f,   1.0f, .0f,     // right bottom
+    .0f, 0.5f, .0f,     .0f, .0f, 1.0f,   .5f, 1.0f      // center top
   };
 
   // vao
@@ -39,10 +39,40 @@ int main(int argc, char *argv[]) {
   // GL_ARRAY_BUFFER - vertex buffer object type
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
   glEnableVertexAttribArray(1);
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+  glEnableVertexAttribArray(2);
+
+  // creating texture buffer (i think...)
+  unsigned int texture;
+  glGenTextures(1, &texture);
+
+  // binding texture
+  glBindTexture(GL_TEXTURE_2D, texture);
+
+  // setting texture parameters
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  // textures loading
+  int width, height, nrChannels;
+  unsigned char* data = stbi_load("img/wall.jpg", &width, &height, &nrChannels, 0);
+
+  if (data) {
+    // generating texture
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+  }
+  else {
+    std::cerr << "stbi_load: Failed to load texture!" << std::endl;
+  }
+  // freeing image byte vector
+  stbi_image_free(data);
 
   // shaders
   shaders shd("shaders/vertex.vs", "shaders/fragment.fs");
@@ -59,6 +89,8 @@ int main(int argc, char *argv[]) {
     glClear(GL_COLOR_BUFFER_BIT);
 
     shd.use_program();
+
+    glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 3);
     
