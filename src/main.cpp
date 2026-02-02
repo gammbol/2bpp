@@ -25,6 +25,17 @@ int main(int argc, char *argv[]) {
     .5f, -.5f, .0f,     1.0f, .0f, .0f,   1.0f, .0f,     // right bottom
     .0f, 0.5f, .0f,     .0f, .0f, 1.0f,   .5f, 1.0f      // center top
   };
+  unsigned int indices[] = {
+    0, 1, 2,
+  };
+
+  // element buffer objects
+  unsigned int EBO;
+  glGenBuffers(1, &EBO);
+
+  // binding ebo
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
   // vao
   unsigned int VAO;
@@ -91,8 +102,8 @@ int main(int argc, char *argv[]) {
     shd.use_program();
 
     glBindTexture(GL_TEXTURE_2D, texture);
-    glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
     
     glfwSwapBuffers(window);
     glfwPollEvents();
