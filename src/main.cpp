@@ -21,12 +21,15 @@ int main(int argc, char *argv[]) {
 
   // vertices
   float vertices[] = {
-    -.5f, -.5f, .0f,    .0f, 1.0f, .0f,   .0f, .0f,    // left bottom
-    .5f, -.5f, .0f,     1.0f, .0f, .0f,   1.0f, .0f,     // right bottom
-    .0f, 0.5f, .0f,     .0f, .0f, 1.0f,   .5f, 1.0f      // center top
+    // vertex           // texture
+    -.5f, -.5f, .0f,    .0f, .0f,     // bottom left
+    -.5f, .5f, .0f,     .0f, 1.0f,    // top left
+    .5f, .5f, .0f,      1.0f, 1.0f,   // top right
+    .5f, -.5f, .0f,     1.0f, .0f,    // bottom right
   };
   unsigned int indices[] = {
-    0, 1, 2,
+    0, 1, 2,    // top triangle
+    0, 2, 3     // bottom triangle
   };
 
   // element buffer objects
@@ -50,12 +53,10 @@ int main(int argc, char *argv[]) {
   // GL_ARRAY_BUFFER - vertex buffer object type
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
   glEnableVertexAttribArray(1);
-  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-  glEnableVertexAttribArray(2);
 
   // creating texture buffer (i think...)
   unsigned int texture;
@@ -72,7 +73,7 @@ int main(int argc, char *argv[]) {
 
   // textures loading
   int width, height, nrChannels;
-  unsigned char* data = stbi_load("img/wall.jpg", &width, &height, &nrChannels, 0);
+  unsigned char* data = stbi_load("img/container.jpg", &width, &height, &nrChannels, 0);
 
   if (data) {
     // generating texture
@@ -103,7 +104,7 @@ int main(int argc, char *argv[]) {
 
     glBindTexture(GL_TEXTURE_2D, texture);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     
     glfwSwapBuffers(window);
     glfwPollEvents();
