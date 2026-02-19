@@ -10,6 +10,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 enum SHADERS_STATES {
   NOS,
   LOADED,
@@ -34,6 +37,7 @@ public:
   void setBool(const std::string& name, bool value);
   void setFloat(const std::string& name, float value);
   void setInt(const std::string& name, int value);
+  void setMat4(const std::string& name, glm::mat4& value);
 };
 
 #endif

@@ -50,11 +50,11 @@ int main(int argc, char *argv[]) {
   glBindVertexArray(VAO);
 
   // vbo
-  unsigned int VBO;
-  glGenBuffers(1, &VBO);
+  unsigned int VBO[2];
+  glGenBuffers(2, VBO);
 
   // GL_ARRAY_BUFFER - vertex buffer object type
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
@@ -128,12 +128,22 @@ int main(int argc, char *argv[]) {
 
     shd.use_program();
 
+    // transformation
+    glm::mat4 transform(1.0f);
+    transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(.0f, .0f, 1.0f));
+    transform = glm::translate(transform, glm::vec3(1.0f, .0f, .0f));
+    transform = glm::scale(transform, glm::vec3(.5f, .5f, .5f));
+    shd.setMat4("transform", transform);
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture[0]);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture[1]);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+    transform = glm::translate(transform, glm::vec3(-1.0f, .0f, .0f));
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     
     glfwSwapBuffers(window);
