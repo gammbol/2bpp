@@ -1,5 +1,7 @@
 #include <main.hpp>
 
+int z_pos = -10.0f;
+
 int main(int argc, char *argv[]) {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -130,9 +132,6 @@ int main(int argc, char *argv[]) {
 
     // transformation
     glm::mat4 transform(1.0f);
-    transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(.0f, .0f, 1.0f));
-    transform = glm::translate(transform, glm::vec3(1.0f, .0f, .0f));
-    transform = glm::scale(transform, glm::vec3(.5f, .5f, .5f));
     shd.setMat4("transform", transform);
 
     glActiveTexture(GL_TEXTURE0);
@@ -140,10 +139,20 @@ int main(int argc, char *argv[]) {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture[1]);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, .0f, .0f));
 
-    transform = glm::translate(transform, glm::vec3(-1.0f, .0f, .0f));
+    glm::mat4 view = glm::mat4(1.0f);
+    view = glm::translate(view, glm::vec3(.0f, .0f, z_pos));
+
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, .1f, 100.0f);
+    // glm::mat4 projection = glm::ortho(0.0f, (float)SCR_WIDTH, 0.0f, (float)SCR_HEIGHT, 0.1f, 100.0f);
+
+    shd.setMat4("model", model);
+    shd.setMat4("view", view);
+    shd.setMat4("projection", projection);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     
     glfwSwapBuffers(window);
@@ -161,5 +170,14 @@ void frambuffer_size_callback(GLFWwindow *window, int width, int height) {
 void process_input(GLFWwindow *window) {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
     glfwSetWindowShouldClose(window, GL_TRUE);
+  }
+
+  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+    std::cout << "W" << std::endl;
+    z_pos++;
+  }
+  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+    std::cout << "S" << std::endl;
+    z_pos--;
   }
 }
