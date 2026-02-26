@@ -34,10 +34,11 @@ public:
   void link_program();
   void use_program();
 
-  void setBool(const std::string& name, bool value);
-  void setFloat(const std::string& name, float value);
-  void setInt(const std::string& name, int value);
+  void setBool(const std::string& name, const bool& value);
+  void setFloat(const std::string& name, const float& value);
+  void setInt(const std::string& name, const int& value);
   void setMat4(const std::string& name, glm::mat4& value);
+  void setVec2(const std::string& name, const float& fst, const float& snd);
 };
 
 #endif
