@@ -10,9 +10,9 @@ void main() {
   vec2 norm = aPos / uResolution;
   vec2 ndc = norm * 2.0 - 1.0;
 
-  ndc.y - -ndc.y;
+  ndc.y = -ndc.y;
 
-  gl_Position = vec4(norm, 0.0, 1.0);
+  gl_Position = vec4(ndc, 0.0, 1.0);
   gl_PointSize = 1.0;
   aColor = color;
 }

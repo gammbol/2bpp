@@ -11,6 +11,7 @@ const int SCR_HEIGHT = 144;
 const float POINT_SCALE = 1.0f;
 
 std::vector<float> genPoints();
+std::vector<float> generatePixels160x144();
 
 int main(int argc, char *argv[])
 {
@@ -19,6 +20,7 @@ int main(int argc, char *argv[])
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "test", nullptr, nullptr);
 
     if (window == nullptr)
@@ -40,7 +42,8 @@ int main(int argc, char *argv[])
 
     // POINTS
     // ----------------------------
-    std::vector<float> pixels{genPoints()};
+    std::vector<float> pixels{generatePixels160x144()};
+    std::cout << pixels[0] << " " << pixels[1] << std::endl;
 
     unsigned int vao;
     glGenVertexArrays(1, &vao);
@@ -62,6 +65,7 @@ int main(int argc, char *argv[])
     shd.link_program();
     shd.use_program();
 
+    std::cout << (float)SCR_WIDTH << std::endl;
     shd.setVec2("uResolution", (float)SCR_WIDTH, (float)SCR_HEIGHT);
 
     while (!glfwWindowShouldClose(window))
@@ -72,7 +76,7 @@ int main(int argc, char *argv[])
         shd.use_program();
 
         // glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
-        glDrawArrays(GL_POINTS, 0, 40 * 40);
+        glDrawArrays(GL_POINTS, 0, 160 * 144);
         // glBindVertexArray(0);
     }
 
@@ -126,6 +130,72 @@ std::vector<float> genPoints() {
                     pixels.push_back(c);
                 }
             }
+        }
+    }
+
+    return pixels;
+}
+
+std::vector<float> generatePixels160x144()
+{
+    const int W = 160;
+    const int H = 144;
+
+    std::vector<float> pixels;
+    pixels.reserve(W * H * 5);
+
+    // центр и радиусы
+    const float cx = W / 2.0f;
+    const float cy = H / 2.0f;
+    const float R  = 50.0f;
+    const float rButton = 8.0f;
+
+    for (int y = 0; y < H; y++)
+    {
+        for (int x = 0; x < W; x++)
+        {
+            float dx = x - cx;
+            float dy = y - cy;
+            float dist = std::sqrt(dx * dx + dy * dy);
+
+            float r = 0.85f;
+            float g = 0.85f;
+            float b = 0.85f; // фон
+
+            if (dist <= R)
+            {
+                // чёрный контур
+                if (dist > R - 2.0f)
+                {
+                    r = g = b = 0.0f;
+                }
+                // кнопка
+                else if (std::sqrt(dx * dx + dy * dy) < rButton)
+                {
+                    r = g = b = 0.9f;
+                }
+                // горизонтальная линия
+                else if (std::abs(dy) < 2.0f)
+                {
+                    r = g = b = 0.0f;
+                }
+                // верхняя половина
+                else if (dy < 0)
+                {
+                    r = 0.9f; g = 0.1f; b = 0.1f;
+                }
+                // нижняя половина
+                else
+                {
+                    r = g = b = 0.95f;
+                }
+            }
+
+            pixels.push_back((float)x);
+            pixels.push_back((float)y);
+            pixels.push_back(r);
+            pixels.push_back(g);
+            pixels.push_back(b);
         }
     }
 
